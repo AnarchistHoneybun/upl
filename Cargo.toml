@@ -1,0 +1,31 @@
+[package]
+name = "groestl"
+version = "0.11.0-pre"
+description = "Grøstl hash function"
+authors = ["RustCrypto Developers"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+edition = "2021"
+documentation = "https://docs.rs/groestl"
+repository = "https://github.com/RustCrypto/hashes"
+keywords = ["crypto", "groestl", "grostl", "hash", "digest"]
+categories = ["cryptography", "no-std"]
+rust-version = "1.81"
+
+[dependencies]
+digest = "=0.11.0-pre.9"
+hex-literal = "0.4"
+
+[dev-dependencies]
+digest = { version = "=0.11.0-pre.9", features = ["dev"] }
+hex-literal = "0.4"
+base16ct = { version = "0.2", features = ["alloc"] }
+
+[features]
+default = ["std"]
+std = ["digest/std"]
+zeroize = ["digest/zeroize"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
