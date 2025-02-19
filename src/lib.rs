@@ -89,14 +89,18 @@ impl VariableOutputCore for GroestlShortVarCore {
 
     #[inline]
     fn finalize_variable_core(&mut self, buffer: &mut Buffer<Self>, out: &mut Output<Self>) {
-        let blocks_len = if buffer.remaining() <= 8 {
+        
+        let total_message_len_bits = (((self.blocks_len * 64) + (buffer.size() - buffer.remaining()) as u64) * 8) as u128;
+        
+        let blocks_len = if buffer.remaining() <= 12 {
             self.blocks_len + 2
         } else {
             self.blocks_len + 1
         };
-        buffer.len64_padding_be(blocks_len, |block| {
+        buffer.digest_pad(0x80, &total_message_len_bits.to_le_bytes()[0..12], |block| {
             println!("Padded Block: {:02x?}", block.as_ref() as &[u8]);
-            println!("blocks_len: {}", self.blocks_len);
+            println!("blocks_len: {}", blocks_len);
+            println!("total_message_len: {}", total_message_len_bits);
             
             compress512::compress(&mut self.state, block.as_ref())
         });
